@@ -111,7 +111,6 @@ pub fn pread(fd: RawFd, buf: &mut [u8], offset: off_t) -> Result<usize>{
 /// therefore not represented in Rust by an actual slice as `IoSlice` is. It
 /// is used with [`process_vm_readv`](fn.process_vm_readv.html)
 /// and [`process_vm_writev`](fn.process_vm_writev.html).
-#[cfg(any(target_os = "linux", target_os = "android"))]
 #[cfg_attr(docsrs, doc(cfg(all())))]
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
@@ -223,13 +222,6 @@ pub fn process_vm_writev(
     local_iov: &[IoSlice<'_>],
     remote_iov: &[RemoteIoVec]) -> Result<usize>
 {
-    let res = unsafe {
-        libc::process_vm_writev(pid.into(),
-                                local_iov.as_ptr() as *const libc::iovec, local_iov.len() as libc::c_ulong,
-                                remote_iov.as_ptr() as *const libc::iovec, remote_iov.len() as libc::c_ulong, 0)
-    };
-
-    Errno::result(res).map(|r| r as usize)
 }
 
 /// Read data directly from another process's virtual memory
@@ -257,12 +249,5 @@ pub fn process_vm_readv(
     local_iov: &mut [IoSliceMut<'_>],
     remote_iov: &[RemoteIoVec]) -> Result<usize>
 {
-    let res = unsafe {
-        libc::process_vm_readv(pid.into(),
-                               local_iov.as_ptr() as *const libc::iovec, local_iov.len() as libc::c_ulong,
-                               remote_iov.as_ptr() as *const libc::iovec, remote_iov.len() as libc::c_ulong, 0)
-    };
-
-    Errno::result(res).map(|r| r as usize)
 }
 }
