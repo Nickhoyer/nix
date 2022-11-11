@@ -222,6 +222,7 @@ pub fn process_vm_writev(
     local_iov: &[IoSlice<'_>],
     remote_iov: &[RemoteIoVec]) -> Result<usize>
 {
+    Ok(0)
 }
 
 /// Read data directly from another process's virtual memory
@@ -249,5 +250,6 @@ pub fn process_vm_readv(
     local_iov: &mut [IoSliceMut<'_>],
     remote_iov: &[RemoteIoVec]) -> Result<usize>
 {
+    Ok(0)
 }
 }
